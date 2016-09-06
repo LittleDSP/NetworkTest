@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">NetworkTest</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_choise">choose test item</string>
+    <string name="gateway">gateway</string>
+    <string name="title_gateway">input ping gateway address</string>
+    <string name="internet">internet</string>
+    <string name="title_internet">input ping internet address</string>
+    <string name="begin_test">begin test</string>
+    <string name="title_autolaunch">auto launch</string>
+    <string name="title_result">test result</string>
+    <string name="delay_ping">delay ping bootup complete（second）</string>
+    <string name="delay_ping_time">input delay time</string>
+    
+
+</resources>

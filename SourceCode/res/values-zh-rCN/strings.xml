@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_name">网络测试</string>
+    <string name="title_choise">勾选测试项</string>
+    <string name="gateway">网关</string>
+    <string name="title_gateway">输入ping的网关地址</string>
+    <string name="internet">因特网</string>
+    <string name="title_internet">输入ping的外网地址</string>
+    <string name="begin_test">开始测试</string>
+    <string name="title_autolaunch">开机后台启动</string>
+    <string name="title_result">测试结果</string>
+    <string name="delay_ping">延时启动测试（秒）</string>
+    <string name="delay_ping_time">输入时间</string>
+
+</resources>
