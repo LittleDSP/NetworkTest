@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -44,6 +45,7 @@ public class MainActivity extends Activity {
 	private TextView tviewPingResult02;
 	private ProgressBar pbarPing;
 	private EditText etextDelayPing;
+	private Button btonKeyTest;
 	
 	private String delayPingTime = "10";
 	private String gatewayAddress = "192.168.0.1";
@@ -73,8 +75,19 @@ public class MainActivity extends Activity {
         pbarPing = (ProgressBar) findViewById(R.id.pbar_ping);
         etextDelayPing = (EditText) findViewById(R.id.etext_delay_ping);
         etextDelayPing.setText(delayPingTime);  
+        btonKeyTest = (Button) findViewById(R.id.button_keytest);
                         
         btonBeginTest.setOnClickListener(new BeginTestListener());  
+        btonKeyTest.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent();
+				intent.setClass(MainActivity.this, KeyTestActivity.class);
+				startActivity(intent);
+			}
+		});
         
     	resReceive = new ResultReceive();
         IntentFilter iFilter = new IntentFilter();
@@ -404,15 +417,44 @@ public class MainActivity extends Activity {
 //								iReboot.setFlags(Intent.FLAG_FROM_BACKGROUND);
 //								MainActivity.this.startActivity(iReboot);
 								
-								Process killproc = Runtime.getRuntime().exec("/system/bin/adb shell");
-								java.io.DataOutputStream os = new java.io.DataOutputStream(killproc.getOutputStream());
-								os.writeBytes("/system/xbin/su \n");
-								os.writeBytes("busybox pkill -9 DVBServer \n");
-								os.writeBytes("exit\n");
-								os.flush();
+//								Process killproc = Runtime.getRuntime().exec("/system/bin/adb shell");
+//								java.io.DataOutputStream os = new java.io.DataOutputStream(killproc.getOutputStream());
+//								os.writeBytes("/system/xbin/su \n");
+//								os.writeBytes("busybox pkill -9 DVBServer \n");
+//								os.writeBytes("exit\n");
+//								os.flush();
+//								
+//								PowerManager pManager=(PowerManager) getSystemService(Context.POWER_SERVICE);  
+//								pManager.reboot("");
 								
-								PowerManager pManager=(PowerManager) getSystemService(Context.POWER_SERVICE);  
-								pManager.reboot("");
+								try {
+				                    
+				                    //获得ServiceManager类
+				                    Class ServiceManager = Class
+				                       .forName("android.os.ServiceManager");
+				                     
+				                    //获得ServiceManager的getService方法
+				                    Method getService = ServiceManager.getMethod("getService", java.lang.String.class);
+				                     
+				                    //调用getService获取RemoteService
+				                    Object oRemoteService = getService.invoke(null,Context.POWER_SERVICE);
+				                     
+				                    //获得IPowerManager.Stub类
+				                    Class cStub = Class
+				                       .forName("android.os.IPowerManager$Stub");
+				                    //获得asInterface方法
+				                    Method asInterface = cStub.getMethod("asInterface", android.os.IBinder.class);
+				                    //调用asInterface方法获取IPowerManager对象
+				                    Object oIPowerManager = asInterface.invoke(null, oRemoteService);
+				                    //获得shutdown()方法
+				                    Method shutdown = oIPowerManager.getClass().getMethod("shutdown",boolean.class,boolean.class);
+				                    //调用shutdown()方法
+				                    shutdown.invoke(oIPowerManager,false,true);           
+				               
+							          } catch (Exception e) {         
+							               Log.e(LOGTAG, e.toString(), e);        
+							          }
+								
 							} catch(Exception e) {
 								Toast.makeText(MainActivity.this, "重启失败，请检测apk权限是否有签名系统权限！", Toast.LENGTH_LONG).show();
 							} finally {

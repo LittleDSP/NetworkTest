@@ -14,6 +14,9 @@
     <string name="title_result">test result</string>
     <string name="delay_ping">delay ping bootup complete（second）</string>
     <string name="delay_ping_time">input delay time</string>
+    <string name="key_test">key test</string>
+    <string name="delay_test">delay test bootup complete（second）</string>
+    <string name="delay_test_time">input delay time</string>
     
 
 </resources>

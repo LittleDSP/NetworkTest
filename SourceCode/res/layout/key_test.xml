@@ -6,37 +6,50 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.dsp.networktest.MainActivity" >
+    tools:context="com.dsp.networktest.KeyTestActivity" >
 
     <Switch
-        android:id="@+id/switch_autolaunch"
+        android:id="@+id/switch_autolaunch_key"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_autolaunch" />
     
     <TextView 
-        android:id="@+id/textview_delay_ping"
+        android:id="@+id/textview_delay_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/switch_autolaunch"
-        android:text="@string/delay_ping"
+        android:layout_below="@id/switch_autolaunch_key"
+        android:text="@string/delay_test"
         />
     
     <EditText
-        android:id="@+id/etext_delay_ping"
+        android:id="@+id/etext_delay_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textview_delay_ping"
+        android:layout_below="@id/textview_delay_test"
         android:inputType="number"
         android:enabled="false"
         android:focusable="false"
-        android:hint="@string/delay_ping_time" />
+        android:hint="@string/delay_test_time" />
     
+    <Button
+        android:id="@+id/button_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etext_delay_test"
+        android:text="@string/begin_test" />
+    
+    <TextView
+        android:id="@+id/textview_test_result01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_test" />
+<!--     
     <TextView
         android:id="@+id/textview_top_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/etext_delay_ping"
+        android:layout_below="@id/textview_delay_test"
         android:text="@string/title_choise" />
 
     <CheckBox
@@ -46,14 +59,9 @@
         android:layout_below="@id/textview_top_title"
         android:text="@string/gateway" />
     
-    <!--
-    <TextView
-        android:id="@+id/tview_gateway"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cbox_gateway"
-        android:text="@string/title_gateway" />
-    -->
+    
+
+    
     
     <EditText
         android:id="@+id/etext_gateway"
@@ -114,5 +122,6 @@
         android:layout_below="@+id/etext_internet"
         android:layout_toRightOf="@+id/button_test"
         android:text="@string/key_test" />
+     -->
     
 </RelativeLayout>

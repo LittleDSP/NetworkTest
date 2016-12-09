@@ -30,4 +30,20 @@ public class Utility {
 		}
 	}
 	
+	public boolean getBootFlagOfKeyTest()
+	{
+		if(mcontext == null) {
+			Log.v(LOGTAG, "Utility.mcontext is null");
+		}
+		dbase = mcontext.getSharedPreferences("dbase_all", Context.MODE_PRIVATE);
+		String str = dbase.getString("autolaunch_key", "false");
+		Log.v(LOGTAG, "Utility autolaunch is " + str);
+		if(str.equals("true")) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 }

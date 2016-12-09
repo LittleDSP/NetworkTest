@@ -14,5 +14,8 @@
     <string name="title_result">测试结果</string>
     <string name="delay_ping">延时启动测试（秒）</string>
     <string name="delay_ping_time">输入时间</string>
+    <string name="key_test">按键测试</string>
+    <string name="delay_test">延时启动测试（秒）</string>
+     <string name="delay_test_time">输入时间</string>
 
 </resources>
