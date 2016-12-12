@@ -7,11 +7,46 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.dsp.networktest.MainActivity" >
-
+    
+	<TextView  
+	    android:id="@+id/teviewRebootStyle"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:text="@string/reboot_style"
+	/>
+	<RadioGroup
+        android:id="@+id/rgRebootStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/teviewRebootStyle"
+        android:contentDescription="@string/reboot_style" >
+	    <RadioButton
+	        android:id="@+id/radioButtonReboot"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/reboot_style_reboot" />
+	    <RadioButton
+	        android:id="@+id/radioButtonPowerkey"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/reboot_style_powerkey" />
+	    <RadioButton
+	        android:id="@+id/radioButtonShutdown"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/reboot_style_shutdown" />
+	    <RadioButton
+	        android:id="@+id/radioButtonStandby"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/reboot_style_standby" />
+    </RadioGroup>
+    
     <Switch
         android:id="@+id/switch_autolaunch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/rgRebootStyle"
         android:text="@string/title_autolaunch" />
     
     <TextView 
@@ -114,5 +149,7 @@
         android:layout_below="@+id/etext_internet"
         android:layout_toRightOf="@+id/button_test"
         android:text="@string/key_test" />
+
+    
     
 </RelativeLayout>

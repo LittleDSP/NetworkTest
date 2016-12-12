@@ -30,6 +30,17 @@ public class Utility {
 		}
 	}
 	
+	public int getRebootStyle()
+	{
+		if(mcontext == null) {
+			Log.v(LOGTAG, "Utility.mcontext is null");
+		}
+		dbase = mcontext.getSharedPreferences("dbase_all", Context.MODE_PRIVATE);
+		int style = dbase.getInt("rebootStyle", 0);
+		Log.v(LOGTAG, "Utility rebootStyle is " + style);
+		return style;
+	}
+	
 	public boolean getBootFlagOfKeyTest()
 	{
 		if(mcontext == null) {

@@ -16,6 +16,12 @@
     <string name="delay_ping_time">输入时间</string>
     <string name="key_test">按键测试</string>
     <string name="delay_test">延时启动测试（秒）</string>
-     <string name="delay_test_time">输入时间</string>
+    <string name="delay_test_time">输入时间</string>
+    
+    <string name="reboot_style">请选择重启方式</string>
+    <string name="reboot_style_reboot">reboot 命令</string>
+    <string name="reboot_style_powerkey">发送power key</string>
+    <string name="reboot_style_shutdown">调用shutdown方法</string>
+    <string name="reboot_style_standby">执行待机脚本</string>
 
 </resources>

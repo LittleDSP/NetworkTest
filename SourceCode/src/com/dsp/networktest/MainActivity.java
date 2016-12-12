@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +21,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +30,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +52,12 @@ public class MainActivity extends Activity {
 	private EditText etextDelayPing;
 	private Button btonKeyTest;
 	
+	private RadioGroup rGroupRebootStyle;
+	private RadioButton rButtonReboot;
+	private RadioButton rButtonPowerKey;
+	private RadioButton rButtonShutdown;
+	private RadioButton rButtonStandby;
+	
 	private String delayPingTime = "10";
 	private String gatewayAddress = "192.168.0.1";
 	private String internetAddress = "www.baidu.com";
@@ -55,6 +66,12 @@ public class MainActivity extends Activity {
 	String pingInfo = "";
 	private int pingGatewayRes = -1;
 	private int pingInternetRes = -1;
+	
+	public static final int STYLE_REBOOT = 1;
+	public static final int STYLE_POWERKEY = 2;
+	public static final int STYLE_SHUTDOWN = 3;
+	public static final int STYLE_STANDBY = 4;
+	
 	
 	private ResultReceive resReceive = null;
 	private ResultHandler resHandler = new ResultHandler();
@@ -76,6 +93,13 @@ public class MainActivity extends Activity {
         etextDelayPing = (EditText) findViewById(R.id.etext_delay_ping);
         etextDelayPing.setText(delayPingTime);  
         btonKeyTest = (Button) findViewById(R.id.button_keytest);
+        
+        rGroupRebootStyle = (RadioGroup) findViewById(R.id.rgRebootStyle);
+        rButtonReboot = (RadioButton) findViewById(R.id.radioButtonReboot);
+        rButtonPowerKey = (RadioButton) findViewById(R.id.radioButtonPowerkey);
+        rButtonShutdown = (RadioButton) findViewById(R.id.radioButtonShutdown);
+        rButtonStandby = (RadioButton) findViewById(R.id.radioButtonStandby);
+
                         
         btonBeginTest.setOnClickListener(new BeginTestListener());  
         btonKeyTest.setOnClickListener(new View.OnClickListener() {
@@ -214,6 +238,34 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
+        
+        rGroupRebootStyle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				// TODO Auto-generated method stub
+				int style = 0;
+				Log.v(LOGTAG, "checkedId=" + checkedId);
+				switch(checkedId) {
+					case R.id.radioButtonReboot:
+						style = STYLE_REBOOT;
+						break;
+					case R.id.radioButtonPowerkey:
+						style = STYLE_POWERKEY;
+						break;
+					case R.id.radioButtonShutdown:
+						style = STYLE_SHUTDOWN;
+						break;
+					case R.id.radioButtonStandby:
+						style = STYLE_STANDBY;
+						break;
+				}
+
+				SharedPreferences.Editor dBaseEditor = getSharedPreferences("dbase_all", Context.MODE_PRIVATE).edit();
+				dBaseEditor.putInt("rebootStyle", style);
+				dBaseEditor.commit();			
+			}
+		});
     }
     
     
@@ -284,6 +336,26 @@ public class MainActivity extends Activity {
     		etextInternet.setEnabled(false);
     		etextInternet.setFocusable(false);
     	}
+    	
+    	int rebootStyle = dBase.getInt("rebootStyle", 0);
+		switch(rebootStyle) {
+			case STYLE_REBOOT:
+				rButtonReboot.setChecked(true);
+				break;
+			case STYLE_POWERKEY:
+				rButtonPowerKey.setChecked(true);
+				break;
+			case STYLE_SHUTDOWN:
+				rButtonShutdown.setChecked(true);
+				break;
+			case STYLE_STANDBY:
+				rButtonStandby.setChecked(true);
+				break;
+			
+			default:
+				rButtonReboot.setChecked(true);
+				break;
+		}
         
 		super.onResume();
 	}
@@ -427,33 +499,72 @@ public class MainActivity extends Activity {
 //								PowerManager pManager=(PowerManager) getSystemService(Context.POWER_SERVICE);  
 //								pManager.reboot("");
 								
-								try {
-				                    
-				                    //获得ServiceManager类
-				                    Class ServiceManager = Class
-				                       .forName("android.os.ServiceManager");
-				                     
-				                    //获得ServiceManager的getService方法
-				                    Method getService = ServiceManager.getMethod("getService", java.lang.String.class);
-				                     
-				                    //调用getService获取RemoteService
-				                    Object oRemoteService = getService.invoke(null,Context.POWER_SERVICE);
-				                     
-				                    //获得IPowerManager.Stub类
-				                    Class cStub = Class
-				                       .forName("android.os.IPowerManager$Stub");
-				                    //获得asInterface方法
-				                    Method asInterface = cStub.getMethod("asInterface", android.os.IBinder.class);
-				                    //调用asInterface方法获取IPowerManager对象
-				                    Object oIPowerManager = asInterface.invoke(null, oRemoteService);
-				                    //获得shutdown()方法
-				                    Method shutdown = oIPowerManager.getClass().getMethod("shutdown",boolean.class,boolean.class);
-				                    //调用shutdown()方法
-				                    shutdown.invoke(oIPowerManager,false,true);           
-				               
-							          } catch (Exception e) {         
-							               Log.e(LOGTAG, e.toString(), e);        
-							          }
+								int rebootStyle = new Utility(MainActivity.this).getRebootStyle();
+								switch(rebootStyle) {
+									case STYLE_REBOOT:
+										PowerManager pManager=(PowerManager) getSystemService(Context.POWER_SERVICE);  
+										pManager.reboot("");
+										break;
+										
+									case STYLE_POWERKEY:
+										Instrumentation inst = new Instrumentation();
+								    	inst.sendKeyDownUpSync(KeyEvent.KEYCODE_POWER);
+										break;
+										
+									case STYLE_SHUTDOWN:
+										//获得ServiceManager类
+					                    Class ServiceManager = Class.forName("android.os.ServiceManager");
+					                    //获得ServiceManager的getService方法
+					                    Method getService = ServiceManager.getMethod("getService", java.lang.String.class);
+					                    //调用getService获取RemoteService
+					                    Object oRemoteService = getService.invoke(null,Context.POWER_SERVICE);
+					                    //获得IPowerManager.Stub类
+					                    Class cStub = Class.forName("android.os.IPowerManager$Stub");
+					                    //获得asInterface方法
+					                    Method asInterface = cStub.getMethod("asInterface", android.os.IBinder.class);
+					                    //调用asInterface方法获取IPowerManager对象
+					                    Object oIPowerManager = asInterface.invoke(null, oRemoteService);
+					                    //获得shutdown()方法
+					                    Method shutdown = oIPowerManager.getClass().getMethod("shutdown",boolean.class,boolean.class);
+					                    //调用shutdown()方法
+					                    shutdown.invoke(oIPowerManager,false,true);  
+										break;
+										
+									case STYLE_STANDBY:
+										Runtime.getRuntime().exec("/system/bin/konka_pm_rtcWakeup 10");
+										break;
+								
+									default:
+										((PowerManager) getSystemService(Context.POWER_SERVICE)).reboot("");
+										break;
+								}
+//								try {
+//				                    
+//				                    //获得ServiceManager类
+//				                    Class ServiceManager = Class
+//				                       .forName("android.os.ServiceManager");
+//				                     
+//				                    //获得ServiceManager的getService方法
+//				                    Method getService = ServiceManager.getMethod("getService", java.lang.String.class);
+//				                     
+//				                    //调用getService获取RemoteService
+//				                    Object oRemoteService = getService.invoke(null,Context.POWER_SERVICE);
+//				                     
+//				                    //获得IPowerManager.Stub类
+//				                    Class cStub = Class
+//				                       .forName("android.os.IPowerManager$Stub");
+//				                    //获得asInterface方法
+//				                    Method asInterface = cStub.getMethod("asInterface", android.os.IBinder.class);
+//				                    //调用asInterface方法获取IPowerManager对象
+//				                    Object oIPowerManager = asInterface.invoke(null, oRemoteService);
+//				                    //获得shutdown()方法
+//				                    Method shutdown = oIPowerManager.getClass().getMethod("shutdown",boolean.class,boolean.class);
+//				                    //调用shutdown()方法
+//				                    shutdown.invoke(oIPowerManager,false,true);           
+//				               
+//							          } catch (Exception e) {         
+//							               Log.e(LOGTAG, e.toString(), e);        
+//							          }
 								
 							} catch(Exception e) {
 								Toast.makeText(MainActivity.this, "重启失败，请检测apk权限是否有签名系统权限！", Toast.LENGTH_LONG).show();

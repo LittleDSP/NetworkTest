@@ -165,47 +165,59 @@ public class KeySendService extends Service{
 //				//iReboot.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 					
 //				KeySendService.this.sendBroadcast(ipoweroff);
 				
-				try {
-                    
-                    //获得ServiceManager类
-                    Class ServiceManager = Class
-                       .forName("android.os.ServiceManager");
-                     
-                    //获得ServiceManager的getService方法
-                    Method getService = ServiceManager.getMethod("getService", java.lang.String.class);
-                     
-                    //调用getService获取RemoteService
-                    Object oRemoteService = getService.invoke(null,Context.POWER_SERVICE);
-                     
-                    //获得IPowerManager.Stub类
-                    Class cStub = Class
-                       .forName("android.os.IPowerManager$Stub");
-                    //获得asInterface方法
-                    Method asInterface = cStub.getMethod("asInterface", android.os.IBinder.class);
-                    //调用asInterface方法获取IPowerManager对象
-                    Object oIPowerManager = asInterface.invoke(null, oRemoteService);
-                    //获得shutdown()方法
-                    Method shutdown = oIPowerManager.getClass().getMethod("shutdown",boolean.class,boolean.class);
-                    //调用shutdown()方法
-                    shutdown.invoke(oIPowerManager,false,true);           
+				try {     
+					int rebootStyle = new Utility(KeySendService.this).getRebootStyle();
+					switch(rebootStyle) {
+						case MainActivity.STYLE_REBOOT:
+							PowerManager pManager=(PowerManager) getSystemService(Context.POWER_SERVICE);  
+							pManager.reboot("");
+							break;
+							
+						case MainActivity.STYLE_POWERKEY:
+							Instrumentation inst = new Instrumentation();
+					    	inst.sendKeyDownUpSync(KeyEvent.KEYCODE_POWER);
+							break;
+							
+						case MainActivity.STYLE_SHUTDOWN:
+							//获得ServiceManager类
+		                    Class ServiceManager = Class.forName("android.os.ServiceManager");
+		                    //获得ServiceManager的getService方法
+		                    Method getService = ServiceManager.getMethod("getService", java.lang.String.class);
+		                    //调用getService获取RemoteService
+		                    Object oRemoteService = getService.invoke(null,Context.POWER_SERVICE);
+		                    //获得IPowerManager.Stub类
+		                    Class cStub = Class.forName("android.os.IPowerManager$Stub");
+		                    //获得asInterface方法
+		                    Method asInterface = cStub.getMethod("asInterface", android.os.IBinder.class);
+		                    //调用asInterface方法获取IPowerManager对象
+		                    Object oIPowerManager = asInterface.invoke(null, oRemoteService);
+		                    //获得shutdown()方法
+		                    Method shutdown = oIPowerManager.getClass().getMethod("shutdown",boolean.class,boolean.class);
+		                    //调用shutdown()方法
+		                    shutdown.invoke(oIPowerManager,false,true);  
+							break;
+							
+						case MainActivity.STYLE_STANDBY:
+							Runtime.getRuntime().exec("/system/bin/konka_pm_rtcWakeup 10");
+							break;
+					
+						default:
+							((PowerManager) getSystemService(Context.POWER_SERVICE)).reboot("");
+							break;
+					}
                
-          } catch (Exception e) {         
-               Log.e(LOGTAG, e.toString(), e);        
-          }
+				} catch(Exception e) {
+					Handler handler = new Handler(Looper.getMainLooper());
+					handler.post(new Runnable() {							
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							Toast.makeText(KeySendService.this, "重启失败，请检测apk权限是否有签名系统权限！", Toast.LENGTH_LONG).show();
+						}
+					});
+					
+				}
 				
-//				try {
-//					Process shotdownproc;
-//					shotdownproc = Runtime.getRuntime().exec("/system/bin/adb shell");
-//					java.io.DataOutputStream os = new java.io.DataOutputStream(shotdownproc.getOutputStream());
-//					os.writeBytes("/system/xbin/su \n");
-////					os.writeBytes("input keyevent 26 \n");
-//					os.writeBytes("reboot \n");
-//					os.writeBytes("exit\n");
-//					os.flush();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
 			}
 			
 		}

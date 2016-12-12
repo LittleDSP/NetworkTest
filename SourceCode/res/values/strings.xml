@@ -18,5 +18,11 @@
     <string name="delay_test">delay test bootup complete（second）</string>
     <string name="delay_test_time">input delay time</string>
     
+    <string name="reboot_style">please select reboot style</string>
+    <string name="reboot_style_reboot">linux reboot cmd</string>
+    <string name="reboot_style_powerkey">send power key</string>
+    <string name="reboot_style_shutdown">call shutdown method</string>
+    <string name="reboot_style_standby">call standby bin</string>
+    
 
 </resources>
